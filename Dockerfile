@@ -7,7 +7,7 @@ WORKDIR /app
 COPY . .
 
 # Install Mastra CLI and dependencies
-RUN npm install -g @mastra/cli && \
+RUN npm install -g mastra && \
     npm install
 
 # Build the Mastra application
