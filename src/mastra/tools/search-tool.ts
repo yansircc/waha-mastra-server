@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { cohere } from "@ai-sdk/cohere";
 import { openai } from "@ai-sdk/openai";
 import { createTool } from "@mastra/core";
@@ -7,7 +6,10 @@ import { rerank } from "@mastra/rag";
 import { embed } from "ai";
 import { z } from "zod";
 
-const qdrant = new QdrantVector(env.QDRANT_URL, env.QDRANT_API_KEY);
+const qdrant = new QdrantVector(
+	process.env.QDRANT_URL ?? "",
+	process.env.QDRANT_API_KEY ?? "",
+);
 
 // Define input and output schemas
 const searchInputSchema = z.object({
