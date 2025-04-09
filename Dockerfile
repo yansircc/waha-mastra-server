@@ -1,30 +1,34 @@
-# Build stage
+# Build stage for Mastra application
 FROM node:20-slim AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY .mastra/output/package*.json ./
+# Copy the entire project for Mastra build
+COPY . .
 
-# Install dependencies
-RUN npm ci
+# Install Mastra CLI and dependencies
+RUN npm install -g @mastra/cli && \
+    npm install
 
-# Copy source code
-COPY .mastra/output/ ./
+# Build the Mastra application
+RUN mastra build
 
 # Production stage
 FROM node:20-slim
 
 WORKDIR /app
 
-# Copy built application from builder stage
-COPY --from=builder /app ./
+# Copy only the built application from builder stage
+COPY --from=builder /app/.mastra/output ./
 
-# Expose the port your app runs on (adjust if needed)
+# Install production dependencies
+RUN npm ci --only=production
+
+# Expose the Mastra default port
 EXPOSE 4111
 
 # Set environment variables
 ENV NODE_ENV=production
 
-# Start the application
+# Start the Mastra server
 CMD ["node", "index.mjs"]
